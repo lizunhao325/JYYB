@@ -76,7 +76,7 @@ export function getQuality(trades: Trade[]) {
   return { scores, strongest: labels[strongestIndex], weakest: labels[weakestIndex], issue: labels[weakestIndex] + (weakestIndex === 3 ? '偏高' : '需要改善'), advice: weakestIndex === 3 ? '减少低质量交易，等待符合自己交易模型的机会。' : weakestIndex === 4 ? '严格执行预设止损，避免让小亏损扩大。' : '保持记录，继续观察这个维度的变化。' }
 }
 
-export function formatMoney(value: number) { return `${value >= 0 ? '+' : '-'}$${Math.abs(value).toFixed(0)}` }
+export function formatMoney(value: number) { return `${value >= 0 ? '+' : '-'}$${Math.abs(value).toFixed(1)}` }
 export function dateKey(date = new Date()) { return date.toISOString().slice(0, 10) }
 
 export function equityPoints(trades: Trade[], startingCapital = 0) {
@@ -88,8 +88,34 @@ export function equityPoints(trades: Trade[], startingCapital = 0) {
   }))
 }
 
+
+export type EquityRange = 'year' | 'month' | 'week' | 'day'
+
+/** Smooth the equity curve for longer ranges by using period-end equity values.
+ * Day: individual trades; Week/Month: daily closes; Year: monthly closes.
+ */
+export function smoothedEquityPoints(trades: Trade[], startingCapital = 0, range: EquityRange = 'month') {
+  const sorted = [...trades].sort((a, b) => new Date(a.createdAt || a.date).getTime() - new Date(b.createdAt || b.date).getTime())
+  if (range === 'day') return equityPoints(sorted, startingCapital)
+  const keyFor = (trade: Trade) => {
+    const d = new Date(trade.createdAt || `${trade.date}T00:00:00`)
+    if (range === 'year') return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  }
+  let total = startingCapital
+  const grouped = new Map<string, { value: number; timestamp: number }>()
+  for (const trade of sorted) {
+    total += trade.amount
+    const ts = new Date(trade.createdAt || `${trade.date}T00:00:00`).getTime()
+    grouped.set(keyFor(trade), { value: total, timestamp: ts })
+  }
+  return [{ date: '起始', value: startingCapital, timestamp: new Date(0).getTime() }, ...Array.from(grouped.entries()).map(([key, item]) => ({ date: key, value: item.value, timestamp: item.timestamp }))]
+}
+
 export function monthDays(year: number, month: number) {
   const first = new Date(year, month, 1).getDay()
   const count = new Date(year, month + 1, 0).getDate()
-  return [...Array(first === 0 ? 6 : first - 1)].map(() => null).concat([...Array(count)].map((_, i) => i + 1))
+  // Calendar order: Saturday → Monday → Friday → Sunday, keeping the trading weekdays in the middle.
+  const offset = first === 6 ? 0 : first === 0 ? 6 : first
+  return [...Array(offset)].map(() => null).concat([...Array(count)].map((_, i) => i + 1))
 }
