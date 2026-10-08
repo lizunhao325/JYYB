@@ -147,3 +147,12 @@
 .day-detail{padding-bottom:54px}.calendar-edit-setting{padding:16px 0;border-top:1px solid var(--border);display:grid;gap:7px}.calendar-edit-setting b{font-size:13px}.calendar-edit-setting span{color:var(--muted);font-size:11px;line-height:1.55}.calendar-edit-toggle{justify-self:start;border:1px solid var(--border);background:#0b1218;color:var(--muted);border-radius:8px;padding:8px 13px;font-size:12px}.calendar-edit-toggle.active{color:#06110f;background:var(--theme);border-color:var(--theme);font-weight:700}
 .day-editor-modal{width:min(560px,100%);max-height:min(82vh,760px);overflow:auto;background:#111a21;border:1px solid #30434e;border-radius:20px;padding:28px;position:relative;box-shadow:0 25px 90px #000}.day-editor-modal h2{margin:12px 0 8px}.day-editor-list{margin:18px 0 12px;border:1px solid var(--border);border-radius:12px;overflow:hidden}.day-editor-row{display:grid;grid-template-columns:42px 1fr 34px;align-items:center;gap:10px;padding:10px 12px;border-top:1px solid var(--border)}.day-editor-row:first-child{border-top:0}.day-editor-edit{width:30px;height:30px;display:grid;place-items:center;border:1px solid var(--border);background:#0b1218;color:var(--muted);border-radius:7px}.day-editor-edit:hover{color:var(--theme);border-color:var(--theme)}.day-editor-add{width:100%;display:flex;align-items:center;justify-content:center;gap:7px;border:1px solid color-mix(in srgb,var(--theme) 45%,var(--border));background:color-mix(in srgb,var(--theme) 7%,#0b1218);color:var(--theme);border-radius:9px;padding:11px 14px;font-weight:700}
 @media(max-width:600px){.day-editor-modal{padding:24px 18px}.day-violation-tags span{font-size:10px}}
+.current-capital-setting{display:grid;gap:9px;padding:15px 0;border-bottom:1px solid var(--border)}
+.current-capital-setting label{display:grid;gap:7px;color:var(--muted);font-size:11px}
+.current-capital-setting input{border:1px solid var(--border);background:#0b1218;color:var(--foreground);border-radius:8px;padding:10px 11px;font-size:16px;outline:none}
+.current-capital-setting input:focus{border-color:var(--theme);box-shadow:0 0 0 3px color-mix(in srgb,var(--theme) 14%,transparent)}
+.current-capital-setting p{margin:0;color:var(--muted);font-size:10px;line-height:1.5}
+.current-capital-setting>button{border:0;border-radius:8px;background:var(--theme);color:#06110f;padding:10px;font-size:11px;font-weight:700}
+.current-capital-setting>button:disabled{opacity:.45;cursor:not-allowed}
+.trade-edit-overlay{z-index:30}
+.trade-action-overlay{z-index:40}
